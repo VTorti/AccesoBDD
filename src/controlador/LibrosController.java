@@ -184,6 +184,33 @@ public class LibrosController {
 		
 		return rows;
 	}
+	public boolean modificar(Libro libro) throws SQLException {
+		int rows=0;//filas afectadas
+		boolean ok=false;
+		String sql="Update libros set titulo=?,autor=?,editorial=? where idlibros=?";
+		PreparedStatement preparedStatement =cn.prepareStatement(sql);
+		//Obtenemos la fecha de sistema y calculamos la devolucion
+		/*
+		 * java.util.Date fecha=new java.util.Date();//fecha del sistema Calendar
+		 * cale=new GregorianCalendar(); cale.setTime(fecha);//objeto fecha
+		 * cale.add(Calendar.DAY_OF_MONTH, 5);//añadimos 5 dias java.util.Date
+		 * fechaDev=cale.getTime();//date a partir de un calendar java.sql.Date
+		 * fechaPrestamo=new java.sql.Date(fecha.getTime()); java.sql.Date
+		 * fechaDevolucion=new java.sql.Date(fechaDev.getTime());
+		 */
+		preparedStatement.setString(1, libro.getTitulo());
+		preparedStatement.setString(2, libro.getAutor());
+		preparedStatement.setString(3, libro.getEditorial());
+		preparedStatement.setFloat(4, libro.getIdLibro());
+		rows=preparedStatement.executeUpdate();
+		if (rows>0) {
+			ok=true;
+		}
+		
+		return ok;
+		
+		
+	}
 
 	public Date devolverLibroPst(Libro libro) throws SQLException {
 		int rows=0;//filas afectadas

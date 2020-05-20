@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class Principal extends JFrame {
 	private JButton btnPrimero,btnAtras,btnAdelante,btnUltimo;
 	private JButton btnNuevo, btnEditar, btnBorrar, btnDeshacer, btnGuardar;
 	private JLabel lblObligatorios;
+	private boolean editar=false;
 
 	/**
 	 * Create the frame.
@@ -60,7 +63,7 @@ public class Principal extends JFrame {
 		controlador=new LibrosController();
 		controlador.abrirConexion();
 		lista=new ArrayList<Libro>();
-		lista=controlador.getConsultaLibrosPst("select * from libros order by titulo");
+		lista=controlador.getConsultaLibrosPst("select * from libros");
 		controlador.cerrarConexion();
 		
 		
@@ -160,6 +163,12 @@ public class Principal extends JFrame {
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				habilitaBotones(false);
+				txtNombre.setEditable(true);
+				txtAutor.setEditable(true);
+				txtEditorial.setEditable(true);
+				editar=true;
+				
+				
 			}
 		});
 		btnBorrar.addActionListener(new ActionListener() {
@@ -189,6 +198,60 @@ public class Principal extends JFrame {
 				habilitaBotones(true);
 				boolean correcto=true;
 				boolean ok=false;
+				boolean correcto1=true;
+				boolean ok1=false;
+				
+				if(editar) {
+					try {
+					String nombre=txtNombre.getText();
+					String autor=txtAutor.getText();
+					String editorial=txtEditorial.getText();
+					int id=Integer.parseInt(txtId.getText());
+			
+						Libro libro=new Libro(id, nombre, autor, editorial);
+						controlador.abrirConexion();
+						ok1=controlador.modificar(libro);
+						
+						habilitaBotones(true);
+						habilitaNavegacion(true);
+						txtNombre.setEditable(false);
+						txtAutor.setEditable(false);
+						txtEditorial.setEditable(false);
+						
+						editar=false;
+					} catch (CamposVaciosException | ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(contentPane, e1.getMessage());
+						correcto1=false;
+					}
+					if (correcto1) {
+						if (ok1) {
+							JOptionPane.showMessageDialog(contentPane, "Libro modificado con éxito");
+							
+						}
+						
+						try {
+							lista=controlador.getConsultaLibrosPst("select * from libros");
+							controlador.cerrarConexion();
+							
+						} catch (SQLException | CamposVaciosException | ISBNException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						
+					
+					habilitaBotones(true);
+					habilitaNavegacion(true);
+				
+					mostrarLibro(lista.get(puntero));
+					
+					}else {
+						habilitaBotones(false);
+						habilitaNavegacion(false);
+					
+					
+				}}else {
 				
 				try {
 				
@@ -242,6 +305,7 @@ public class Principal extends JFrame {
 					habilitaBotones(false);
 					habilitaNavegacion(false);
 				}
+			}
 			}
 				
 		});

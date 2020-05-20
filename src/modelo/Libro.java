@@ -48,6 +48,14 @@ public class Libro {
 		this.setPrestado(prestado);
 	}
 
+	
+	public Libro(int id, String nombre, String autor2, String editorial2) throws CamposVaciosException {
+		this.setIdLibro(id);
+		this.setTitulo(nombre);
+		this.setAutor(autor2);
+		this.setEditorial(editorial2);
+		
+	}
 	public int getIdLibro() {
 		return idLibro;
 	}
@@ -181,6 +189,7 @@ public class Libro {
 		return "Libro= " + idLibro + "," + titulo + "," + autor + "," + editorial + "," + isbn +"," + prestado + "," + fechaPrestamo
 				+ "," + fechaDevolucion + "," + fechaAlta;
 	}
+	
 
 
 	
